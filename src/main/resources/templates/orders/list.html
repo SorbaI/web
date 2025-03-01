@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Список заказов</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
+</head>
+<body>
+<div class="container">
+    <h1>Список заказов</h1>
+    <a th:href="@{/orders/create}" class="btn btn-primary">Создать заказ</a>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Клиент</th>
+            <th>Адрес</th>
+            <!-- Другие столбцы -->
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="order : ${orders}">
+            <td th:text="${order.orderId}"></td>
+            <td th:text="${order.client.firstName} + ' ' + ${order.client.lastName}"></td>
+            <td th:text="${order.address}"></td>
+            <!-- Другие ячейки -->
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.min.js}"></script>
+</body>
+</html>

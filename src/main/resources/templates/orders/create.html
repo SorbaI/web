@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Создать заказ</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
+</head>
+<body>
+<div class="container">
+  <h1>Создать заказ</h1>
+  <form th:action="@{/orders/create}" th:object="${order}" method="post">
+    <div class="mb-3">
+      <label for="address" class="form-label">Адрес</label>
+      <input type="text" class="form-control" id="address" th:field="*{address}"/>
+    </div>
+
+    <div class="mb-3">
+      <label for="clientId" class="form-label">Клиент</label>
+      <select class="form-select" id="clientId" name="clientId">
+        <option th:each="client : ${clients}" th:value="${client.clientId}" th:text="${client.firstName} + ' ' + ${client.lastName}"></option>
+      </select>
+    </div>
+    <!-- Другие поля формы -->
+
+    <button type="submit" class="btn btn-primary">Создать</button>
+  </form>
+</div>
+<script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.min.js}"></script>
+</body>
+</html>
