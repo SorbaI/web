@@ -1,19 +1,21 @@
 DROP TYPE IF EXISTS type_cover CASCADE;
 CREATE TYPE type_cover AS ENUM ('Hardcover','Softcover');
 DROP TYPE IF EXISTS order_status CASCADE;
-CREATE TYPE order_status AS ENUM ('processed','assembled','delivered');
+CREATE TYPE order_status AS ENUM ('processed','pending','delivered');
 
 DROP TABLE IF EXISTS books CASCADE;
 CREATE TABLE IF NOT EXISTS books(
 	book_id serial PRIMARY KEY,
 	title text NOT NULL,
 	authors text,
+	genre varchar(30),
 	pub_year int,
 	pub_company text,
 	pages int CHECK(pages > 0),
 	price int NOT NULL CHECK(price > 0),
-	available int NOT NULL CHECK (available > 0),
-	cover type_cover NOT NULL
+	available int NOT NULL CHECK (available >= 0),
+	cover type_cover NOT NULL,
+	add_info text
 );
 
 DROP TABLE IF EXISTS clients CASCADE;
