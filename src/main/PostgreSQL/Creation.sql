@@ -20,7 +20,9 @@ DROP TABLE IF EXISTS clients CASCADE;
 CREATE TABLE IF NOT EXISTS clients(
 	client_id serial PRIMARY KEY,
 	full_name text NOT NULL,
-	contact_info text[] NOT NULL
+	address text NOT NULL,
+	email varchar(256),
+	phone varchar(20) NOT NULL
 );
 
 DROP TABLE IF EXISTS orders CASCADE;
@@ -37,5 +39,6 @@ CREATE TABLE IF NOT EXISTS orders(
 DROP TABLE IF EXISTS books_in_order CASCADE;
 CREATE TABLE IF NOT EXISTS books_in_order(
 	order_id int REFERENCES orders MATCH FULL,
-	book_id int REFERENCES books MATCH FULL
+	book_id int REFERENCES books MATCH FULL,
+	num_of_books int NOT NULL CHECK (num_of_books > 0)
 );
