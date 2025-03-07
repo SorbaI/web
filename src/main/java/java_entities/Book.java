@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -23,6 +22,9 @@ public class Book {
 
     @Column(name = "authors")
     private String authors;
+
+    @Column(name = "genre")
+    private String genre;
 
     @Column(name = "pub_year")
     private Integer pubYear;
@@ -43,8 +45,8 @@ public class Book {
     @Column(name = "cover", nullable = false)
     private TypeCover cover;
 
-    @ManyToMany(mappedBy = "books")
-    private List<Order> orders;
+    @Column(name = "add_info")
+    private String add_info;
 
     public Book() {
     }
@@ -55,10 +57,5 @@ public class Book {
         if (o == null || getClass() != o.getClass()) return false;
         Book book = (Book) o;
         return Objects.equals(bookId, book.bookId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(bookId);
     }
 }

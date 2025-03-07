@@ -2,7 +2,6 @@ package java_entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -19,14 +18,16 @@ public class Client {
     @Column(name = "full_name", nullable = false)
     private String fullName;
 
-    @Column(name = "contact_info", nullable = false, columnDefinition = "text[]")
-    private String[] contactInfo;
+    @Column(name = "address", nullable = false)
+    private String address;
 
-    @OneToMany(mappedBy = "client")
-    private List<Order> orders;
+    @Column(name = "email")
+    private String email;
 
-    public Client() {
-    }
+    @Column(name = "phone", nullable = false)
+    private String phone;
+
+    public Client() {}
 
     @Override
     public boolean equals(Object o) {
@@ -34,10 +35,5 @@ public class Client {
         if (o == null || getClass() != o.getClass()) return false;
         Client client = (Client) o;
         return Objects.equals(clientId, client.clientId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(clientId);
     }
 }

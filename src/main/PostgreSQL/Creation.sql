@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS clients(
 	full_name text NOT NULL,
 	address text NOT NULL,
 	email varchar(256),
-	phone varchar(20) NOT NULL
+	phone varchar(20) NOT NULL UNIQUE
 );
 
 DROP TABLE IF EXISTS orders CASCADE;

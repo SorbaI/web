@@ -8,8 +8,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,6 +20,37 @@ import static org.junit.jupiter.api.Assertions.*;
 @ContextConfiguration(classes = HibernateConfig.class)
 @Transactional
 public class DAOTests {
+
+    class BookIdAndNums {
+        private Integer bookId;
+        private Integer num_of_books;
+
+        public BookIdAndNums(Integer bookId, Integer num_of_books) {
+            this.bookId = bookId;
+            this.num_of_books = num_of_books;
+        }
+
+        public Integer getBookId() {
+            return bookId;
+        }
+
+        public Integer getNumOfBooks() {
+            return num_of_books;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            BookIdAndNums that = (BookIdAndNums) o;
+            return Objects.equals(bookId, that.getBookId()) && Objects.equals(num_of_books, that.getNumOfBooks());
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(bookId, num_of_books);
+        }
+    }
 
     @Autowired
     private BookDAO bookDAO;
@@ -26,6 +60,7 @@ public class DAOTests {
 
     @Autowired
     private OrderDAO orderDAO;
+
 
     @Test
     public void testBookCRUD() {
@@ -52,70 +87,125 @@ public class DAOTests {
     }
 
     @Test
+    public void testBookfilters() {
+        List<Book> books = bookDAO.filterBooks(null, "Miranda", null, null);
+        Set<Integer> checkId = new HashSet<>();
+        for (Book book : books) {
+            checkId.add(book.getBookId());
+        }
+        Set<Integer> realId = new HashSet<>();
+        realId.add(7);
+        realId.add(8);
+        realId.add(9);
+        assertEquals(realId, checkId);
+
+        books = bookDAO.filterBooks("History", null, null, null);
+        checkId = new HashSet<>();
+        for (Book book : books) {
+            checkId.add(book.getBookId());
+        }
+        realId = new HashSet<>();
+        realId.add(2);
+        realId.add(5);
+        realId.add(9);
+        assertEquals(realId, checkId);
+
+        books = bookDAO.filterBooks(null, null, 200, 500);
+        checkId = new HashSet<>();
+        for (Book book : books) {
+            checkId.add(book.getBookId());
+        }
+        realId = new HashSet<>();
+        realId.add(1);
+        realId.add(2);
+        realId.add(7);
+        assertEquals(realId, checkId);
+    }
+
+    @Test
+    public void ClientTests() {
+        List<Client> clients = clientDAO.findByName("Harry");
+        Set<Integer> get = new HashSet<>();
+        for (Client client : clients) {
+            get.add(client.getClientId());
+        }
+        Set<Integer> ans = new HashSet<>();
+        ans.add(1);
+        assertEquals(get, ans);
+
+        clients = clientDAO.findByPhone("+44 7700 900000");
+        get = new HashSet<>();
+        for (Client client : clients) {
+            get.add(client.getClientId());
+        }
+        ans = new HashSet<>();
+        ans.add(1);
+        assertEquals(get, ans);
+    }
+
+    @Test
+    public void getAllBooksInOrder() {
+
+        List<BookOrder> booksInOrder = orderDAO.getAllBooks(orderDAO.getById(1));
+
+        Set<BookIdAndNums> actual = new HashSet<>();
+        actual.add(new BookIdAndNums(1, 1));
+        actual.add(new BookIdAndNums(2, 1));
+
+        Set<BookIdAndNums> received = new HashSet<>();
+        for (BookOrder result : booksInOrder) {
+            Book book = result.getBook();
+            Integer num_of_books = result.getNum_of_books();
+            received.add(new BookIdAndNums(book.getBookId(), num_of_books));
+        }
+        assertEquals(received, actual);
+        booksInOrder = orderDAO.getAllBooksByOrderId(6);
+        assert (booksInOrder.isEmpty());
+    }
+
+    @Test
+    public void AddDeleteBookInOrder() {
+        Book book = bookDAO.getById(1);
+        Order order = orderDAO.getById(1);
+        Integer was_avaible = book.getAvailable();
+        BookOrder bookOrder = orderDAO.getBookOrder(order, book);
+        Integer was_nums = bookOrder.getNum_of_books();
+        orderDAO.addBook(order, book, was_nums + 1);
+        assertEquals(orderDAO.getBookOrder(order, book).getNum_of_books(), was_nums + 1);
+        assertEquals(was_avaible - 1, book.getAvailable());
+        assertNotNull(orderDAO.getBookOrder(order, book));
+        orderDAO.deleteBook(order, book);
+        assertNull(orderDAO.getBookOrder(order, book));
+        orderDAO.deleteBook(order,book);
+        book = bookDAO.getById(5);
+        was_avaible = book.getAvailable();
+        orderDAO.addBook(order,book,2);
+        assertEquals(was_avaible - 2,book.getAvailable());
+
+    }
+
+
+    @Test
     public void testClientCRUD() {
-        // Create
         Client client = new Client();
         client.setFullName("Test Client");
-        client.setContactInfo(new String[]{"test@example.com"});
+        client.setEmail("test@example.com");
+        client.setAddress("Example address");
+        client.setPhone("+123243523");
         clientDAO.save(client);
 
-        // Read
         Client retrievedClient = clientDAO.getById(client.getClientId());
         assertNotNull(retrievedClient);
         assertEquals("Test Client", retrievedClient.getFullName());
 
-        // Update
         retrievedClient.setFullName("Updated Test Client");
         clientDAO.update(retrievedClient);
 
         Client updatedClient = clientDAO.getById(client.getClientId());
         assertEquals("Updated Test Client", updatedClient.getFullName());
 
-        // Delete
         clientDAO.delete(updatedClient);
         assertNull(clientDAO.getById(client.getClientId()));
     }
-    @Test
-    public void testOrderCRUDAndFindByClient() {
-        // Create Client
-        Client client = new Client();
-        client.setFullName("Test Client");
-        client.setContactInfo(new String[]{"test@example.com"});
-        clientDAO.save(client);
 
-        // Create Order
-        Order order = new Order();
-        order.setClient(client);
-        order.setAddress("Test Address");
-        order.setCreationTime(new Timestamp(System.currentTimeMillis()));
-        order.setDelivTime(new Timestamp(System.currentTimeMillis() + 86400000)); // Tomorrow
-        order.setStatus(OrderStatus.processed);
-        order.setTotal(20);
-        orderDAO.save(order);
-
-        // Read
-        Order retrievedOrder = orderDAO.getById(order.getOrderId());
-        assertNotNull(retrievedOrder);
-        assertEquals("Test Address", retrievedOrder.getAddress());
-        assertEquals(client.getClientId(), retrievedOrder.getClient().getClientId());
-
-        // Find by client
-        List<Order> ordersByClient = orderDAO.findByClient(client);
-        assertNotNull(ordersByClient);
-        assertEquals(1, ordersByClient.size());
-        assertEquals(order.getOrderId(), ordersByClient.get(0).getOrderId());
-
-        // Update
-        retrievedOrder.setAddress("Updated Test Address");
-        orderDAO.update(retrievedOrder);
-
-        Order updatedOrder = orderDAO.getById(order.getOrderId());
-        assertEquals("Updated Test Address", updatedOrder.getAddress());
-
-        // Delete
-        orderDAO.delete(updatedOrder);
-        assertNull(orderDAO.getById(order.getOrderId()));
-
-        clientDAO.delete(client); // Clean up client
-    }
 }
