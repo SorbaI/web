@@ -72,3 +72,18 @@
     - Найти или добавить с помощью специальной кнопки книгу и перейти на страницу книги.
     - Добавить изменить информацию о книге.
 	
+---
+
+Второй Этап
+-------------
+-------------
+[Реализация Отображения БД](https://github.com/SorbaI/web/tree/master/src/main/java/java_entities)
+
+[Реализация служебных классов DAO](https://github.com/SorbaI/web/tree/master/src/main/java/DAO)
+
+[Тесты](https://github.com/SorbaI/web/tree/master/src/test/java/DAOTests.java)
+
+---
+### Собранное покрытие
+
+![Alt text](photo/coverage.png)
