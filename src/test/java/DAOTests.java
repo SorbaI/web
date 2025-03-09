@@ -99,7 +99,7 @@ public class DAOTests {
         realId.add(9);
         assertEquals(realId, checkId);
 
-        books = bookDAO.filterBooks("History", null, null, null);
+        books = bookDAO.filterBooks("History", "", null, null);
         checkId = new HashSet<>();
         for (Book book : books) {
             checkId.add(book.getBookId());
@@ -110,7 +110,7 @@ public class DAOTests {
         realId.add(9);
         assertEquals(realId, checkId);
 
-        books = bookDAO.filterBooks(null, null, 200, 500);
+        books = bookDAO.filterBooks("", null, 200, 500);
         checkId = new HashSet<>();
         for (Book book : books) {
             checkId.add(book.getBookId());
@@ -206,6 +206,14 @@ public class DAOTests {
 
         clientDAO.delete(updatedClient);
         assertNull(clientDAO.getById(client.getClientId()));
+        assertEquals(6, clientDAO.getAll().size());
+    }
+    @Test
+    public void deleteorders() {
+        orderDAO.deleteById(1);
+        assertNull(orderDAO.getById(1));
+        orderDAO.deleteById(1);
+        assertEquals(4, orderDAO.getAll().size());
     }
 
 }
