@@ -1,4 +1,4 @@
-package configs;
+package main.configs;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -14,8 +14,9 @@ import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
-@ComponentScan("DAO")
+@ComponentScan("main.DAO")
 public class HibernateConfig {
+
     private String DB_DRIVER = "org.postgresql.Driver";
     private String DB_URL = "jdbc:postgresql://localhost:5432/test";
     private String DB_USERNAME = "ilya";
@@ -40,11 +41,11 @@ public class HibernateConfig {
         return dataSource;
     }
 
-    @Bean
+    @Bean(name="entityManagerFactory")
     public LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
-        sessionFactory.setPackagesToScan("java_entities");
+        sessionFactory.setPackagesToScan("main.java_entities");
 
         Properties hibernateProperties = new Properties();
         hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "update");

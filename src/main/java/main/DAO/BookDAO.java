@@ -1,13 +1,11 @@
-package DAO;
+package main.DAO;
 
-import java_entities.Order;
+import main.java_entities.Book;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import java_entities.Book;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

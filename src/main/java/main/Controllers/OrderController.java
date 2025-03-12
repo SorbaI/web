@@ -1,10 +1,10 @@
-package Controllers;
+package main.Controllers;
 import java.util.List;
 
-import DAO.ClientDAO;
-import DAO.OrderDAO;
-import java_entities.Client;
-import java_entities.Order;
+import main.DAO.ClientDAO;
+import main.DAO.OrderDAO;
+import main.java_entities.Client;
+import main.java_entities.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -47,3 +47,8 @@ public class OrderController {
         return "redirect:/orders/list";
     }
 }
+
+
+
+
+

@@ -1,11 +1,15 @@
-import DAO.*;
-import java_entities.*;
-import configs.HibernateConfig;
+package main;
 
+import main.DAO.BookDAO;
+import main.DAO.ClientDAO;
+import main.DAO.OrderDAO;
+import main.configs.HibernateConfig;
+import main.java_entities.*;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
@@ -13,12 +17,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
-@ContextConfiguration(classes = HibernateConfig.class)
 @Transactional
+@ContextConfiguration(classes = HibernateConfig.class)
 public class DAOTests {
 
     class BookIdAndNums {
@@ -80,10 +84,10 @@ public class DAOTests {
         bookDAO.update(retrievedBook);
 
         Book updatedBook = bookDAO.getById(book.getBookId());
-        assertEquals("Updated Test Book", updatedBook.getTitle());
+        Assertions.assertEquals("Updated Test Book", updatedBook.getTitle());
 
         bookDAO.delete(updatedBook);
-        assertNull(bookDAO.getById(book.getBookId()));
+        Assertions.assertNull(bookDAO.getById(book.getBookId()));
     }
 
     @Test
@@ -97,7 +101,7 @@ public class DAOTests {
         realId.add(7);
         realId.add(8);
         realId.add(9);
-        assertEquals(realId, checkId);
+        Assertions.assertEquals(realId, checkId);
 
         books = bookDAO.filterBooks("History", "", null, null);
         checkId = new HashSet<>();
@@ -108,7 +112,7 @@ public class DAOTests {
         realId.add(2);
         realId.add(5);
         realId.add(9);
-        assertEquals(realId, checkId);
+        Assertions.assertEquals(realId, checkId);
 
         books = bookDAO.filterBooks("", null, 200, 500);
         checkId = new HashSet<>();
@@ -119,7 +123,7 @@ public class DAOTests {
         realId.add(1);
         realId.add(2);
         realId.add(7);
-        assertEquals(realId, checkId);
+        Assertions.assertEquals(realId, checkId);
     }
 
     @Test
@@ -131,7 +135,7 @@ public class DAOTests {
         }
         Set<Integer> ans = new HashSet<>();
         ans.add(1);
-        assertEquals(get, ans);
+        Assertions.assertEquals(get, ans);
 
         clients = clientDAO.findByPhone("+44 7700 900000");
         get = new HashSet<>();
@@ -140,7 +144,7 @@ public class DAOTests {
         }
         ans = new HashSet<>();
         ans.add(1);
-        assertEquals(get, ans);
+        Assertions.assertEquals(get, ans);
     }
 
     @Test
@@ -158,7 +162,7 @@ public class DAOTests {
             Integer num_of_books = result.getNum_of_books();
             received.add(new BookIdAndNums(book.getBookId(), num_of_books));
         }
-        assertEquals(received, actual);
+        Assertions.assertEquals(received, actual);
         booksInOrder = orderDAO.getAllBooksByOrderId(6);
         assert (booksInOrder.isEmpty());
     }
@@ -171,16 +175,16 @@ public class DAOTests {
         BookOrder bookOrder = orderDAO.getBookOrder(order, book);
         Integer was_nums = bookOrder.getNum_of_books();
         orderDAO.addBook(order, book, was_nums + 1);
-        assertEquals(orderDAO.getBookOrder(order, book).getNum_of_books(), was_nums + 1);
-        assertEquals(was_avaible - 1, book.getAvailable());
-        assertNotNull(orderDAO.getBookOrder(order, book));
+        Assertions.assertEquals(orderDAO.getBookOrder(order, book).getNum_of_books(), was_nums + 1);
+        Assertions.assertEquals(was_avaible - 1, book.getAvailable());
+        Assertions.assertNotNull(orderDAO.getBookOrder(order, book));
         orderDAO.deleteBook(order, book);
-        assertNull(orderDAO.getBookOrder(order, book));
+        Assertions.assertNull(orderDAO.getBookOrder(order, book));
         orderDAO.deleteBook(order,book);
         book = bookDAO.getById(5);
         was_avaible = book.getAvailable();
         orderDAO.addBook(order,book,2);
-        assertEquals(was_avaible - 2,book.getAvailable());
+        Assertions.assertEquals(was_avaible - 2,book.getAvailable());
 
     }
 
@@ -195,25 +199,25 @@ public class DAOTests {
         clientDAO.save(client);
 
         Client retrievedClient = clientDAO.getById(client.getClientId());
-        assertNotNull(retrievedClient);
-        assertEquals("Test Client", retrievedClient.getFullName());
+        Assertions.assertNotNull(retrievedClient);
+        Assertions.assertEquals("Test Client", retrievedClient.getFullName());
 
         retrievedClient.setFullName("Updated Test Client");
         clientDAO.update(retrievedClient);
 
         Client updatedClient = clientDAO.getById(client.getClientId());
-        assertEquals("Updated Test Client", updatedClient.getFullName());
+        Assertions.assertEquals("Updated Test Client", updatedClient.getFullName());
 
         clientDAO.delete(updatedClient);
-        assertNull(clientDAO.getById(client.getClientId()));
-        assertEquals(6, clientDAO.getAll().size());
+        Assertions.assertNull(clientDAO.getById(client.getClientId()));
+        Assertions.assertEquals(6, clientDAO.getAll().size());
     }
     @Test
     public void deleteorders() {
         orderDAO.deleteById(1);
-        assertNull(orderDAO.getById(1));
+        Assertions.assertNull(orderDAO.getById(1));
         orderDAO.deleteById(1);
-        assertEquals(4, orderDAO.getAll().size());
+        Assertions.assertEquals(4, orderDAO.getAll().size());
     }
 
 }

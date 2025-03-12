@@ -1,9 +1,11 @@
-package java_entities;
+package main.java_entities;
 
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.io.Serializable;
 import java.util.Objects;
 

@@ -1,7 +1,9 @@
-package java_entities;
+package main.java_entities;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.util.Objects;
 
 @Entity

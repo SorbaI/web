@@ -1,4 +1,4 @@
-package java_entities;
+package main.java_entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;

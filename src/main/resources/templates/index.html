@@ -1,13 +1,26 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Главная страница</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Книжный Интернет-магазин</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+
 </head>
 <body>
-    <h1>Web Practik</h1>
-    <div th:replace="~{fragments/menu :: menu}"></div>
-    <div th:replace="~{fragments/footer :: footer}"></div>
+    <script src="js/bootstrap.bundle.min.js"> </script>
+    <div th:replace="~{templates :: page-header}"></div>
+
+
+        <h1 class="display-4 text-center mb-5">
+            Книжный интернет-магазин!
+        </h1>
+        <p class="lead ml-5">
+            Приложение для управления базой данных книжного интернет-магазина.
+            <br>
+            Редактируйте, добавляйте и удаляйте информацию о книгах, авторах и категориях напрямую из базы данных.
+        </p>
+    <div th:replace="~{templates :: footer}"></div>
 </body>
 </html>

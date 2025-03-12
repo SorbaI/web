@@ -1,10 +1,10 @@
-package DAO;
+package main.DAO;
 
-import java_entities.Client;
+import main.java_entities.Client;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

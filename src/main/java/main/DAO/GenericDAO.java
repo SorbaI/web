@@ -1,4 +1,4 @@
-package DAO;
+package main.DAO;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

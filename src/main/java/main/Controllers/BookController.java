@@ -1,9 +1,9 @@
-package Controllers;
+package main.Controllers;
 
 import java.util.List;
 
-import DAO.BookDAO;
-import java_entities.Book;
+import main.DAO.BookDAO;
+import main.java_entities.Book;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

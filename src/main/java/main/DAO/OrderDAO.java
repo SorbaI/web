@@ -1,15 +1,15 @@
-package DAO;
+package main.DAO;
 
-import java_entities.Book;
-import java_entities.BookOrder;
-import java_entities.BookOrderId;
+import main.java_entities.Book;
+import main.java_entities.BookOrder;
+import main.java_entities.BookOrderId;
+import main.java_entities.Order;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import java_entities.Order;
 
 import java.util.List;
 
@@ -73,7 +73,7 @@ public class OrderDAO extends GenericDAO<Order,Integer> {
         session.flush();
         session.refresh(book);
     }
-    public void deleteBook(Order order,Book book) {
+    public void deleteBook(Order order, Book book) {
         Session session = getCurrentSession();
 
         BookOrder bookOrder = getBookOrder(order,book);

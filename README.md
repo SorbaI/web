@@ -81,7 +81,7 @@
 
 [Реализация служебных классов DAO](https://github.com/SorbaI/web/tree/master/src/main/java/DAO)
 
-[Тесты](https://github.com/SorbaI/web/tree/master/src/test/java/DAOTests.java)
+[Тесты](https://github.com/SorbaI/web/tree/master/src/test/java/main.DAOTests.java)
 
 ---
 ### Собранное покрытие
