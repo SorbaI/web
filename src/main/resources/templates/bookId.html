@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> Клиент </title>
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+</head>
+<body>
+<script src="/js/bootstrap.bundle.min.js"> </script>
+
+<div th:replace="~{templates :: page-header}"></div>
+
+<h1 class="display-4 text-center mb-5">
+  Информация о клиенте
+</h1>
+
+<div class="container">
+
+  <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+    <span th:text="${errorMessage}"></span>
+  </div>
+
+  <form th:action="@{/books/{bookId}/edit(bookId=${book.bookId})}" th:object="${book}" method="post">
+    <div class="mb-3">
+      <label for="title" class="form-label">Название</label>
+      <input type="text" class="form-control" id="title" th:field="*{title}">
+    </div>
+    <div class="mb-3">
+      <label for="authors" class="form-label">Авторы</label>
+      <input type="text" class="form-control" id="authors" th:field="*{authors}">
+    </div>
+    <div class="mb-3">
+      <label for="genre" class="form-label">Жанр</label>
+      <input type="text" class="form-control" id="genre" th:field="*{genre}">
+    </div>
+    <div class="mb-3">
+      <label for="pubYear" class="form-label">Год издания</label>
+      <input type="number" class="form-control" id="pubYear" th:field="*{pubYear}">
+    </div>
+    <div class="mb-3">
+      <label for="pubCompany" class="form-label">Издательство</label>
+      <input type="text" class="form-control" id="pubCompany" th:field="*{pubCompany}">
+    </div>
+    <div class="mb-3">
+      <label for="pages" class="form-label">Количество страниц</label>
+      <input type="number" class="form-control" id="pages" th:field="*{pages}">
+    </div>
+    <div class="mb-3">
+      <label for="price" class="form-label">Цена</label>
+      <input type="number" class="form-control" id="price" th:field="*{price}">
+    </div>
+    <div class="mb-3">
+      <label for="available" class="form-label">Доступно</label>
+      <input type="number" class="form-control" id="available" th:field="*{available}">
+    </div>
+    <div class="mb-3">
+      <label for="cover" class="form-label">Обложка</label>
+      <select class="form-control" id="cover" th:field="*{cover}">
+        <option th:each="cover : ${T(main.java_entities.TypeCover).values()}"
+                th:value="${cover}"
+                th:text="${cover.name()}">
+        </option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label for="add_info" class="form-label">Дополнительная информация</label>
+      <textarea class="form-control" id="add_info" th:field="*{add_info}"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+    <a th:href="@{/books}" class="btn btn-secondary">Назад к списку</a>
+  </form>
+
+</div>
+
+</body>
+</html>

@@ -11,14 +11,5 @@ public class MainController {
         return "index";
     }
 
-    @GetMapping("/clients")
-    public String clients() {
-        return "clients";
-    }
-
-    @GetMapping("/books")
-    public String books() {
-        return "books";
-    }
 }
 

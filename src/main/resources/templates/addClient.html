@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Книжный Интернет-магазин</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+</head>
+<body>
+
+<script src="/js/bootstrap.bundle.min.js"> </script>
+<div th:replace="~{templates :: page-header}"></div>
+
+
+<div class="container mt-4">
+  <h1>Добавить нового клиента</h1>
+
+  <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+    <span th:text="${errorMessage}"></span>
+  </div>
+
+  <form th:action="@{/clients/add}" th:object="${newClient}" method="post">
+    <div class="mb-3">
+      <label for="fullName" class="form-label">Имя</label>
+      <input type="text" class="form-control" id="fullName" th:field="*{fullName}" required autocomplete="off">
+      <div class="invalid-feedback" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></div>
+    </div>
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" class="form-control" id="email" th:field="*{email}" autocomplete="off">
+      <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+    </div>
+    <div class="mb-3">
+      <label for="phone" class="form-label">Телефон</label>
+      <input type="text" class="form-control" id="phone" th:field="*{phone}" required autocomplete="off">
+      <div class="invalid-feedback" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
+    </div>
+    <div class="mb-3">
+      <label for="address" class="form-label">Адрес</label>
+      <input type="text" class="form-control" id="address" th:field="*{address}" required autocomplete="off">
+      <div class="invalid-feedback" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+    <a th:href="@{/clients}" class="btn btn-secondary">Отмена</a>
+  </form>
+
+</div>
+
+</body>
+</html>
