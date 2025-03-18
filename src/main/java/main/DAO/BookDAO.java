@@ -18,7 +18,7 @@ public class BookDAO extends GenericDAO<Book,Integer> {
         super(Book.class);
     }
 
-    public List<Book> filterBooks(String genre, String author, Integer minPrice, Integer maxPrice) {
+    public List<Book> filterBooks(String genre, String author, Integer minPrice, Integer maxPrice,String title) {
         Session session = getCurrentSession();
         StringBuilder hql = new StringBuilder("FROM Book WHERE TRUE");
         if (genre != null && !genre.isEmpty()) {
@@ -32,6 +32,9 @@ public class BookDAO extends GenericDAO<Book,Integer> {
         }
         if(maxPrice != null) {
             hql.append(" AND price <= :maxPrice");
+        }
+        if (title != null && !title.isEmpty()) {
+            hql.append(" AND title LIKE:title");
         }
         Query<Book> query = session.createQuery(hql.toString(), Book.class);
 
@@ -47,6 +50,10 @@ public class BookDAO extends GenericDAO<Book,Integer> {
         if (maxPrice != null) {
             query.setParameter("maxPrice",maxPrice);
         }
+        if (title != null && !title.isEmpty()) {
+            query.setParameter("title", "%" + title + "%");
+        }
+
 
         return query.list();
     }

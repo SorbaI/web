@@ -35,6 +35,7 @@ public abstract class GenericDAO<T, ID extends Serializable> {
     public void save(T entity) {
         getCurrentSession().persist(entity);
         getCurrentSession().flush();
+        getCurrentSession().refresh(entity);
     }
 
     public T update(T entity) {

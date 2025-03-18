@@ -3,10 +3,15 @@ package main.java_entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "orders")
@@ -15,21 +20,23 @@ import java.util.Objects;
 public class Order {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "orders_order_id_seq") // Изменено!
+    @SequenceGenerator(name = "orders_order_id_seq", sequenceName = "orders_order_id_seq", allocationSize = 1)
     @Column(name = "order_id")
     private Integer orderId;
 
     @Column(name = "creation_time", nullable = false)
-    private Timestamp creationTime;
+    private LocalDateTime creationTime;
 
     @Column(name = "address", nullable = false)
     private String address;
 
     @Column(name = "deliv_time", nullable = false)
-    private Timestamp delivTime;
+    private LocalDateTime delivTime;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     private OrderStatus status;
 
     @Column(name = "total")
@@ -37,15 +44,11 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "client_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Client client;
 
-    @ManyToMany
-    @JoinTable(
-            name = "books_in_order",
-            joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "book_id")
-    )
-    private List<Book> books;
+    @OneToMany(mappedBy = "order")
+    private List<BookOrder> BookOrder;
 
     public Order() {
     }

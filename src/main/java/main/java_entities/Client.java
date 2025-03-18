@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -13,7 +14,8 @@ import java.util.Objects;
 public class Client {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "clients_client_id_seq") // Изменено!
+    @SequenceGenerator(name = "clients_client_id_seq", sequenceName = "clients_client_id_seq", allocationSize = 1)
     @Column(name = "client_id")
     private Integer clientId;
 
@@ -28,6 +30,9 @@ public class Client {
 
     @Column(name = "phone", nullable = false)
     private String phone;
+
+    @OneToMany(mappedBy = "client")
+    private List<Order> orders;
 
     public Client() {}
 

@@ -1,7 +1,7 @@
-DROP TYPE IF EXISTS type_cover CASCADE;
-CREATE TYPE type_cover AS ENUM ('Hardcover','Softcover');
-DROP TYPE IF EXISTS order_status CASCADE;
-CREATE TYPE order_status AS ENUM ('processed','pending','delivered');
+DROP TYPE IF EXISTS typecover CASCADE;
+CREATE TYPE typecover AS ENUM ('Hardcover','Softcover');
+DROP TYPE IF EXISTS orderstatus CASCADE;
+CREATE TYPE orderstatus AS ENUM ('processed','pending','delivered');
 
 DROP TABLE IF EXISTS books CASCADE;
 CREATE TABLE IF NOT EXISTS books(
@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS books(
 	pages int CHECK(pages > 0),
 	price int NOT NULL CHECK(price > 0),
 	available int NOT NULL CHECK (available >= 0),
-	cover type_cover NOT NULL,
+	cover typecover NOT NULL,
 	add_info text
 );
 
@@ -31,17 +31,17 @@ DROP TABLE IF EXISTS orders CASCADE;
 CREATE TABLE IF NOT EXISTS orders(
 	order_id serial PRIMARY KEY,
 	creation_time timestamp NOT NULL,
-	client_id int REFERENCES clients MATCH FULL,
+	client_id int REFERENCES clients MATCH FULL ON DELETE CASCADE,
 	address text NOT NULL,
 	deliv_time timestamp NOT NULL,
-	status order_status NOT NULL,
-	total int CHECK (total > 0)
+	status orderstatus NOT NULL,
+	total int CHECK (total >= 0)
 );
 
 DROP TABLE IF EXISTS books_in_order CASCADE;
 CREATE TABLE IF NOT EXISTS books_in_order(
-	order_id int REFERENCES orders MATCH FULL,
-	book_id int REFERENCES books MATCH FULL,
+	order_id int REFERENCES orders MATCH FULL ON DELETE CASCADE,
+	book_id int REFERENCES books MATCH FULL ON DELETE CASCADE,
 	num_of_books int NOT NULL CHECK (num_of_books > 0)
 );
 
@@ -85,7 +85,6 @@ INSERT INTO books_in_order (order_id, book_id, num_of_books) VALUES
 (4, 1, 1),
 (5, 1, 5);
 
-
 CREATE OR REPLACE FUNCTION update_available_books()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -93,14 +92,28 @@ BEGIN
     UPDATE books
     SET available = available - NEW.num_of_books
     WHERE book_id = NEW.book_id;
+
+	UPDATE orders
+    SET total = total + NEW.num_of_books * (SELECT price FROM books WHERE NEW.book_id = book_id)
+    WHERE order_id = NEW.order_id;
   ELSIF (TG_OP = 'UPDATE') THEN
     UPDATE books
     SET available = available + OLD.num_of_books - NEW.num_of_books
     WHERE book_id = NEW.book_id;
+
+	UPDATE orders
+    SET total = total + (NEW.num_of_books - OLD.num_of_books) * (SELECT price FROM books WHERE NEW.book_id = book_id)
+    WHERE order_id = NEW.order_id;
+
   ELSIF (TG_OP = 'DELETE') THEN
     UPDATE books
     SET available = available + OLD.num_of_books
     WHERE book_id = OLD.book_id;
+
+	UPDATE orders
+    SET total = total - OLD.num_of_books * (SELECT price FROM books WHERE OLD.book_id = book_id)
+    WHERE order_id = OLD.order_id;
+
   END IF;
 
   RETURN NULL;

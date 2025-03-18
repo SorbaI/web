@@ -48,7 +48,7 @@ public class HibernateConfig {
         sessionFactory.setPackagesToScan("main.java_entities");
 
         Properties hibernateProperties = new Properties();
-        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "update");
+        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "validate");
         hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
         hibernateProperties.setProperty("connection_pool_size", "1");
 

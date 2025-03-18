@@ -58,10 +58,12 @@ public class OrderDAO extends GenericDAO<Order,Integer> {
         BookOrder bookOrder = getBookOrder(order, book);
 
         if (bookOrder == null) {
+            Order managedOrder = (Order) session.merge(order);
+            Book managedBook = (Book) session.merge(book);
             bookOrder = new BookOrder();
-            bookOrder.setId(new BookOrderId(order.getOrderId(),book.getBookId()));
-            bookOrder.setOrder(order);
-            bookOrder.setBook(book);
+            bookOrder.setId(new BookOrderId(managedOrder.getOrderId(), managedBook.getBookId()));
+            bookOrder.setOrder(managedOrder);
+            bookOrder.setBook(managedBook);
             bookOrder.setNum_of_books(num_of_books);
 
             session.persist(bookOrder);
@@ -72,6 +74,7 @@ public class OrderDAO extends GenericDAO<Order,Integer> {
 
         session.flush();
         session.refresh(book);
+        session.refresh(order);
     }
     public void deleteBook(Order order, Book book) {
         Session session = getCurrentSession();
@@ -80,6 +83,8 @@ public class OrderDAO extends GenericDAO<Order,Integer> {
 
         if(bookOrder != null) {
             session.delete(bookOrder);
+            session.flush();
         }
+
     }
 }
