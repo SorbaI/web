@@ -77,13 +77,25 @@
 Второй Этап
 -------------
 -------------
-[Реализация Отображения БД](https://github.com/SorbaI/web/tree/master/src/main/java/java_entities)
+[Реализация Отображения БД](https://github.com/SorbaI/web/tree/master/src/main/java/main/java_entities)
 
-[Реализация служебных классов DAO](https://github.com/SorbaI/web/tree/master/src/main/java/DAO)
+[Реализация служебных классов DAO](https://github.com/SorbaI/web/tree/master/src/main/java/main/DAO)
 
-[Тесты](https://github.com/SorbaI/web/tree/master/src/test/java/main.DAOTests.java)
+[Тесты](https://github.com/SorbaI/web/tree/master/src/test/java/main/DAOTests.java)
 
 ---
 ### Собранное покрытие
 
 ![Alt text](photo/coverage.png)
+
+---
+
+Третий Этап
+-------------
+-------------
+[HTML Страницы](https://github.com/SorbaI/web/tree/master/src/main/resources/templates)
+
+[Реализация Контроллеров](https://github.com/SorbaI/web/tree/master/src/main/java/main/Controllers)
+
+[Тесты](https://github.com/SorbaI/web/tree/master/src/test/java/main/WebTests.java)
+
