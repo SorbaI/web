@@ -97,5 +97,5 @@
 
 [Реализация Контроллеров](https://github.com/SorbaI/web/tree/master/src/main/java/main/Controllers)
 
-[Тесты](https://github.com/SorbaI/web/tree/master/src/test/java/main/WebTests.java)
+[Тесты](https://github.com/SorbaI/web/tree/master/src/test/java/main/WebTest.java)
 
