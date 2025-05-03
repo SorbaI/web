@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import jakarta.validation.Valid;
 import main.DAO.BookDAO;
 import main.java_entities.Book;
+import main.java_entities.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,6 +42,16 @@ public class BookController {
     public String addBookpage(Model model) {
         model.addAttribute("newBook", new Book());
         return "addBook";
+    }
+
+    @GetMapping("/books/{bookId}/delete")
+    public String deleteBook(@PathVariable Integer bookId, Model model) {
+        Book book =bookDAO.getById(bookId);
+        if (book == null) {
+            return "error";
+        }
+        bookDAO.delete(book);
+        return "redirect:/books";
     }
 
     @PostMapping("/books/add")

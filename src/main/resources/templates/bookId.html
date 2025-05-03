@@ -12,7 +12,7 @@
 <div th:replace="~{templates :: page-header}"></div>
 
 <h1 class="display-4 text-center mb-5">
-  Информация о клиенте
+  Информация о книге
 </h1>
 
 <div class="container">
@@ -70,6 +70,9 @@
 
     <button type="submit" class="btn btn-primary">Сохранить изменения</button>
     <a th:href="@{/books}" class="btn btn-secondary">Назад к списку</a>
+    <a th:href="@{/books/{bookId}/delete(bookId=${book.bookId})}" class="btn btn-primary btn-sm"
+       onclick="return confirm('Вы уверены, что хотите удалить книгу?')">Удалить</a>
+
   </form>
 
 </div>

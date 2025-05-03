@@ -91,7 +91,64 @@ public class WebTest {
 
     }
     @Test
-    void addClientTest(){
+    void FunctionalityTest(){
+
+        try {
+            deleteTestClient();
+        } catch (AssertionError e) {}
+        try {
+            deleteTestBook();
+        } catch (AssertionError e) {}
+        driver.get(baseUrl +"/books");
+        //Проверка Поиска книг
+
+        findElement(By.id("searchTitle")).sendKeys("T");
+        click(By.xpath("//button[text()='Поиск']"));
+        WebElement bookTable = findElement(By.xpath("//table[@class='table table-striped']"));
+        WebElement tableBody = bookTable.findElement(By.xpath("//tbody"));
+        List<WebElement> rows = tableBody.findElements(By.tagName("tr"));
+        assertEquals(6, rows.size());
+
+
+        findElement(By.id("searchAuthor")).sendKeys("w");
+        click(By.xpath("//button[text()='Поиск']"));
+        bookTable = findElement(By.xpath("//table[@class='table table-striped']"));
+        tableBody = bookTable.findElement(By.xpath("//tbody"));
+        rows = tableBody.findElements(By.tagName("tr"));
+        assertEquals(5, rows.size());
+
+        // Проверка добавления книги
+        click(By.xpath("//a[text()='Добавить книгу в каталог']"));
+        //Везде попытки добавить книгу без обязательных полей +click()
+        click(By.xpath("//button[text()='Сохранить']"));
+        assertEquals(baseUrl + "/books/add",driver.getCurrentUrl());
+
+        findElement(By.id("title")).sendKeys("TestBook");
+        click(By.xpath("//button[text()='Сохранить']"));
+        assertEquals(baseUrl + "/books/add",driver.getCurrentUrl());
+
+        findElement(By.id("authors")).sendKeys("TestAuthor");
+        click(By.xpath("//button[text()='Сохранить']"));
+        assertEquals(baseUrl + "/books/add",driver.getCurrentUrl());
+
+        findElement(By.id("genre")).sendKeys("JustTestBookGenre");
+        click(By.xpath("//button[text()='Сохранить']"));
+        assertEquals(baseUrl + "/books/add",driver.getCurrentUrl());
+
+        findElement(By.id("price")).sendKeys("543");
+        click(By.xpath("//button[text()='Сохранить']"));
+        assertEquals(baseUrl + "/books/add",driver.getCurrentUrl());
+
+        findElement(By.id("available")).sendKeys("3");
+        // Проверка перехода на страницу
+        clickWaitFullUrl(By.xpath("//button[text()='Сохранить']"),baseUrl + "/books");
+
+        // Проверка, что книга добавлена
+        tableBody = findElement(By.xpath("//tbody"));
+        rows = tableBody.findElements(By.tagName("tr"));
+        assertEquals(11, rows.size());
+
+
         //ADD WRONG CLIENT
         driver.get(baseUrl + "/clients");
         click(By.xpath("//a[text()='Добавить клиента']"));
@@ -111,8 +168,8 @@ public class WebTest {
 
         //FIND CLIENT IN CLIENTS
         WebElement clientTable =findElement(By.xpath("//table[@class='table table-striped']"));
-        WebElement tableBody = clientTable.findElement(By.xpath("//tbody"));
-        List<WebElement> rows = tableBody.findElements(By.tagName("tr"));
+        tableBody = clientTable.findElement(By.xpath("//tbody"));
+        rows = tableBody.findElements(By.tagName("tr"));
         Integer find = null;
         WebElement clientrow = null;
         for (WebElement row : rows) {
@@ -148,39 +205,62 @@ public class WebTest {
         assertEquals(baseUrl +"/orders/" +orderId + "/books/add",driver.getCurrentUrl());
         WebElement table = findElement(By.tagName("tbody"));
         rows = table.findElements(By.tagName("tr"));
+        Integer bookId = 0;
         for(WebElement row : rows) {
             List<WebElement> cells = row.findElements(By.tagName("td"));
-            if("TestBook".equals(cells.get(1).toString())) {
-                assertEquals(543,Integer.parseInt(cells.get(5).toString()));
+            if("TestBook".equals(cells.get(1).getText())) {
+                bookId = Integer.parseInt(cells.get(0).getText());
+                break;
             }
         }
-        clickWaitUrl(By.xpath("//a[@href='/orders/"+ orderId +"/books/17/add' and contains(@class, 'btn-success')]"),"/orders/" + orderId);
+        assertNotEquals(0,bookId);
+        clickWaitFullUrl(By.xpath("//a[@href='/orders/"+ orderId +"/books/" + bookId +
+                "/add' and contains(@class, 'btn-success')]"),baseUrl + "/orders/" + orderId);
         assertEquals("543",findElement(By.xpath("//input[@id='total']")).getAttribute("value"));
+        //drop in delete testClient testBook
+        deleteTestClient();
+        deleteTestBook();
+    }
 
-        //DELETE CLIENT
-        driver.get(baseUrl + "/clients/" + find);
-        findElement(By.xpath("//a[contains(text(), 'Удалить клиента')]")).click();
+    void deleteTestClient() {
+        driver.get(baseUrl + "/clients");
+        WebElement clientTable = findElement(By.xpath("//table[@class='table table-striped']"));
+        WebElement tableBody = clientTable.findElement(By.xpath("//tbody"));
+        List<WebElement> rows = tableBody.findElements(By.tagName("tr"));
+        Integer clientId = 0;
+        for (WebElement row : rows) {
+            List<WebElement> Cells = row.findElements(By.tagName("td"));
+            if("Test Client".equals(Cells.get(1).getText())){
+                clientId = Integer.parseInt(Cells.get(0).getText());
+                wait.until(ExpectedConditions.elementToBeClickable(Cells.get(3))).click();
+                break;
+            }
+        }
+        assertNotEquals(0,clientId);
+        wait.until(ExpectedConditions.urlToBe(baseUrl + "/clients/" + clientId));
+        click(By.xpath("//a[contains(text(), 'Удалить')]"));
         org.openqa.selenium.Alert alert = wait.until(ExpectedConditions.alertIsPresent());
         alert.accept();
         assertEquals(baseUrl + "/clients",driver.getCurrentUrl());
-
-
     }
-    @Test
-    public void testBook() {
-        driver.get(baseUrl +"/books");
-
-        findElement(By.id("searchTitle")).sendKeys("T");
-        click(By.xpath("//button[text()='Поиск']"));
-        WebElement tableBody = findElement(By.xpath("//tbody"));
+    void deleteTestBook() {
+        //DELETE testBook
+        driver.get(baseUrl + "/books");
+        WebElement bookTable = findElement(By.xpath("//table[@class='table table-striped']"));
+        WebElement tableBody = bookTable.findElement(By.xpath("//tbody"));
         List<WebElement> rows = tableBody.findElements(By.tagName("tr"));
-        assertEquals(7, rows.size());
-
-        findElement(By.id("searchAuthor")).sendKeys("w");
-        click(By.xpath("//button[text()='Поиск']"));
-        tableBody = findElement(By.xpath("//tbody"));
-        rows = tableBody.findElements(By.tagName("tr"));
-        assertEquals(5, rows.size());
+        for (WebElement row : rows) {
+            List<WebElement> Cells = row.findElements(By.tagName("td"));
+            if("TestBook".equals(Cells.get(1).getText())){
+                wait.until(ExpectedConditions.elementToBeClickable(Cells.get(6))).click();
+                break;
+            }
+        }
+        assertNotEquals(baseUrl + "/books",driver.getCurrentUrl());
+        click(By.xpath("//a[contains(text(), 'Удалить')]"));
+        org.openqa.selenium.Alert alert = wait.until(ExpectedConditions.alertIsPresent());
+        alert.accept();
+        assertEquals(baseUrl + "/books",driver.getCurrentUrl());
     }
 
 }
